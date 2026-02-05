@@ -5,8 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verdikt GPT - Эксперт по отношениям</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
     <style>
+        /* Глобальные стили и переменные */
+        :root {
+            --primary: #ec4899;
+            --primary-dark: #db2777;
+            --primary-light: #f472b6;
+            --secondary: #8b5cf6;
+            --secondary-dark: #7c3aed;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-card-light: rgba(30, 41, 59, 0.95);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --glow: 0 0 20px rgba(236, 72, 153, 0.5);
+            --ios-blue: #ec4899;
+            --ios-gray: #8E8E93;
+            --ios-light-gray: #F2F2F7;
+            --ios-card: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Светлая тема */
+        [data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-light: rgba(255, 255, 255, 0.95);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --glow: 0 0 20px rgba(236, 72, 153, 0.2);
+        }
+
+        /* Высокая контрастность */
+        [data-theme="high-contrast"] {
+            --bg-gradient: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            --bg-card: rgba(0, 0, 0, 0.9);
+            --bg-card-light: rgba(0, 0, 0, 0.95);
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-tertiary: #999999;
+            --border-color: rgba(255, 255, 255, 0.3);
+            --glow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Градиентная тема */
+        [data-theme="gradient"] {
+            --bg-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            --bg-card: rgba(255, 255, 255, 0.1);
+            --bg-card-light: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.9);
+            --text-tertiary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,168 +82,630 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.3s ease;
         }
 
+        /* Фоновые элементы с анимациями */
+        .background-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .grid-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--primary-light) 1px, transparent 1px),
+                linear-gradient(90deg, var(--primary-light) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+            animation: gridMove 20s linear infinite;
+        }
+
+        /* Основной контейнер */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
+            width: 100%;
             margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
         }
 
+        /* Шапка с навигацией */
         .app-header {
-            text-align: center;
-            padding: 30px 0;
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            animation: slideDown 1s ease;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 15px;
-            margin-bottom: 15px;
         }
 
         .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #ec4899, #8b5cf6);
-            border-radius: 15px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 24px;
+            box-shadow: var(--glow);
+            animation: pulse 2s infinite;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+        .app-title h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
-        .chat-container {
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            max-width: 800px;
-            margin: 0 auto;
+        .app-title p {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
         }
 
-        .chat-messages {
-            min-height: 300px;
-            max-height: 500px;
-            overflow-y: auto;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 15px;
-        }
-
-        .message {
-            padding: 15px 20px;
-            margin: 15px 0;
-            border-radius: 15px;
-            max-width: 80%;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .ai-message {
-            background: rgba(236, 72, 153, 0.2);
-            border-left: 4px solid #ec4899;
-            margin-right: auto;
-        }
-
-        .user-message {
-            background: rgba(139, 92, 246, 0.2);
-            border-right: 4px solid #8b5cf6;
-            margin-left: auto;
-            text-align: right;
-        }
-
-        .input-area {
+        .header-right {
             display: flex;
             gap: 15px;
+            align-items: center;
         }
 
-        #message-input {
+        /* Режим презентации */
+        .presentation-mode {
+            padding: 0;
+            max-width: 100%;
+        }
+
+        .presentation-mode .app-header,
+        .presentation-mode .sidebar,
+        .presentation-mode .chat-controls,
+        .presentation-mode .examples,
+        .presentation-mode footer {
+            display: none !important;
+        }
+
+        .presentation-mode .chat-container {
+            border-radius: 0;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .presentation-mode .chat-messages {
+            max-height: calc(100vh - 120px);
+            font-size: 1.3rem;
+            padding: 40px;
+        }
+
+        .presentation-nav {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        /* Основной контент */
+        .main-content {
+            display: flex;
             flex: 1;
-            padding: 15px 20px;
-            background: rgba(15, 23, 42, 0.7);
-            border: 2px solid rgba(236, 72, 153, 0.3);
-            border-radius: 15px;
-            color: white;
-            font-size: 16px;
-            font-family: 'Inter', sans-serif;
-            resize: none;
-            min-height: 60px;
-            outline: none;
-            transition: border-color 0.3s ease;
+            gap: 30px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.3s both;
         }
 
-        #message-input:focus {
-            border-color: #ec4899;
+        /* Боковая панель */
+        .sidebar {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        #send-button {
-            background: linear-gradient(135deg, #ec4899, #8b5cf6);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            padding: 0 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
+        /* Карточки боковой панели */
+        .sidebar-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            animation: slideInLeft 0.5s ease;
+        }
+
+        .sidebar-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: transform 0.2s ease;
+            font-weight: 600;
         }
 
-        #send-button:hover {
+        /* Режимы AI */
+        .ai-modes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mode-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .mode-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .mode-item.active {
+            background: rgba(236, 72, 153, 0.2);
+            border-color: var(--primary);
+        }
+
+        .mode-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .mode-info h4 {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+
+        .mode-info p {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+        }
+
+        /* Быстрые команды */
+        .quick-commands {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .command-item {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .command-item:hover {
+            background: rgba(139, 92, 246, 0.2);
             transform: translateY(-2px);
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Достижения */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
 
+        .achievement-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .achievement-item.unlocked {
+            background: rgba(236, 72, 153, 0.1);
+            border: 2px solid var(--primary);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .achievement-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+
+        /* Статистика */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+        }
+
+        /* Основная область чата */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Панель управления чатом */
+        .chat-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 15px 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* iOS-стиль кнопок */
+        .ios-button {
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 
+                0 4px 6px -1px rgba(236, 72, 153, 0.2),
+                0 2px 4px -1px rgba(236, 72, 153, 0.1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .ios-button:active {
+            transform: scale(0.96);
+            box-shadow: 
+                0 2px 4px -1px rgba(236, 72, 153, 0.2),
+                0 1px 2px -1px rgba(236, 72, 153, 0.1);
+        }
+
+        .ios-button.secondary {
+            background: var(--ios-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+
+        .ios-button.tertiary {
+            background: transparent;
+            color: var(--ios-blue);
+            box-shadow: none;
+            padding: 10px 16px;
+        }
+
+        .ios-button.small {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        /* Контейнер чата */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            animation: slideInRight 0.5s ease;
+        }
+
+        /* Заголовок чата */
+        .chat-header {
+            background: rgba(30, 41, 59, 0.9);
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ai-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--glow);
+            animation: float 6s infinite ease-in-out;
+        }
+
+        .chat-header-text h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .chat-header-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Сообщения чата */
+        .chat-messages {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            max-height: 500px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            line-height: 1.6;
+            position: relative;
+            word-wrap: break-word;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: messageAppear 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--ios-blue);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: var(--bg-card-light);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .message-sender {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-content {
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .message-content pre {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .message-content code {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 12px;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Действия с сообщениями */
+        .message-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .message-action {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .message-action:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Голосовой интерфейс */
+        .voice-interface {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .voice-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .voice-button.recording {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .voice-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Индикатор набора текста */
         .typing-indicator {
             display: none;
-            padding: 15px 20px;
-            background: rgba(236, 72, 153, 0.1);
-            border-radius: 15px;
-            margin: 10px 0;
-            width: 100px;
+            align-self: flex-start;
+            background: var(--bg-card-light);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border-bottom-left-radius: 4px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            width: 120px;
         }
 
         .typing-dots {
             display: flex;
-            gap: 5px;
+            align-items: center;
+            gap: 8px;
         }
 
         .typing-dots span {
-            width: 8px;
-            height: 8px;
-            background: #ec4899;
+            height: 12px;
+            width: 12px;
+            background: var(--primary);
             border-radius: 50%;
-            animation: bounce 1.4s infinite;
+            display: inline-block;
+            animation: typingBounce 1.4s infinite;
         }
 
         .typing-dots span:nth-child(2) {
@@ -186,241 +716,2413 @@
             animation-delay: 0.4s;
         }
 
-        @keyframes bounce {
-            0%, 60%, 100% {
-                transform: translateY(0);
+        /* Примеры вопросов */
+        .examples {
+            padding: 20px 30px;
+            background: rgba(30, 41, 59, 0.8);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .examples h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .example-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Панель ввода */
+        .input-container {
+            display: flex;
+            padding: 20px 30px;
+            background: rgba(30, 41, 59, 0.9);
+            border-top: 1px solid var(--border-color);
+            gap: 15px;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #message-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(236, 72, 153, 0.2);
+            border-radius: 16px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            transition: var(--transition);
+            outline: none;
+            resize: none;
+            min-height: 60px;
+            max-height: 200px;
+        }
+
+        #message-input:focus {
+            border-color: var(--ios-blue);
+            box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2);
+        }
+
+        #message-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Умные подсказки */
+        .smart-suggestions {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card-light);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 10;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Подвал */
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-light);
+        }
+
+        /* Модальные окна */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            transform: translateY(50px) scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--gradient);
+            color: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Достижения уведомления */
+        .achievement-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: achievementSlide 3s ease;
+        }
+
+        /* Темы */
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .theme-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-option.active {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-dark {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+
+        .theme-light {
+            background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+        }
+
+        .theme-high-contrast {
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+        }
+
+        .theme-gradient {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+        }
+
+        /* Экспорт */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .export-option {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .export-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .export-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Анимации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes messageAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes achievementSlide {
+            0% { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+            20% { transform: translateX(-50%) translateY(20px); opacity: 1; }
+            80% { transform: translateX(-50%) translateY(20px); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+        }
+
+        /* Новые анимации для фона */
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            color: var(--primary-light);
+            opacity: 0.1;
+            font-size: 20px;
+            animation: floatHeart 15s infinite linear;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
             }
-            30% {
-                transform: translateY(-5px);
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .connection-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFlow 3s infinite;
+        }
+
+        @keyframes particleFlow {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(100px, -100px);
+                opacity: 0;
+            }
+        }
+
+        /* Анимация подключения API */
+        @keyframes apiConnecting {
+            0% {
+                background: rgba(234, 179, 8, 0.15);
+                color: #fbbf24;
+                box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+            }
+            50% {
+                background: rgba(59, 130, 246, 0.15);
+                color: #60a5fa;
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+            }
+            100% {
+                background: rgba(34, 197, 94, 0.15);
+                color: #4ade80;
+                box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            }
+        }
+
+        .api-connecting {
+            animation: apiConnecting 2s infinite alternate !important;
+        }
+
+        .api-error {
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #f87171 !important;
+            animation: pulse 2s infinite !important;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1100px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
             }
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 15px;
             }
             
-            .chat-container {
-                padding: 20px;
+            .app-title h1 {
+                font-size: 1.8rem;
             }
             
-            h1 {
-                font-size: 2rem;
+            .chat-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
             }
             
-            .input-area {
+            .control-group {
+                justify-content: space-between;
+            }
+            
+            .message {
+                max-width: 95%;
+            }
+            
+            .input-container {
                 flex-direction: column;
             }
             
-            #send-button {
-                height: 50px;
+            .input-actions {
+                width: 100%;
                 justify-content: center;
+            }
+            
+            .modal-content {
+                padding: 20px;
+                width: 95%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="app-header">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-heart"></i>
-                </div>
-                <div>
-                    <h1>Verdikt GPT</h1>
-                    <p style="color: #94a3b8;">Эксперт по отношениям и психологии</p>
-                </div>
-            </div>
+    <!-- Фоновые элементы -->
+    <div class="background-elements">
+        <div class="grid-pattern"></div>
+        <div class="floating-hearts" id="floating-hearts"></div>
+        <div class="connection-particles" id="connection-particles"></div>
+    </div>
+
+    <!-- Уведомления -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Сообщение отправлено</span>
+    </div>
+
+    <!-- Уведомления о достижениях -->
+    <div class="achievement-notification" id="achievement-notification" style="display: none;">
+        <div class="achievement-icon" id="achievement-icon">🎯</div>
+        <div>
+            <div id="achievement-title">Достижение получено!</div>
+            <div id="achievement-desc" style="font-size: 0.9rem; opacity: 0.9;"></div>
         </div>
+    </div>
 
-        <div class="chat-container">
-            <div class="chat-messages" id="chat-messages">
-                <div class="message ai-message">
-                    <div style="font-weight: 600; color: #ec4899; margin-bottom: 10px;">
-                        <i class="fas fa-heart"></i> Эксперт по отношениям
-                    </div>
-                    <div style="line-height: 1.6;">
-                        Привет! 👋 Я - эксперт в области психологии отношений, знакомств и распознавания манипуляций.<br><br>
-                        💕 <strong>Отношения</strong> - помощь в построении здоровых отношений, решение конфликтов<br>
-                        👥 <strong>Знакомства</strong> - советы по онлайн и офлайн знакомствам<br>
-                        🛡️ <strong>Манипуляции</strong> - распознавание психологических манипуляций<br><br>
-                        Расскажите, с какой ситуацией вы столкнулись? Я помогу разобраться!
-                    </div>
-                    <div style="text-align: right; margin-top: 10px; font-size: 0.8rem; color: #94a3b8;">
-                        Сейчас
-                    </div>
+    <!-- Модальное окно настроек -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="settings-close">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-cog"></i> Настройки
+            </h2>
+            
+            <div class="modal-section">
+                <h3><i class="fas fa-palette"></i> Тема оформления</h3>
+                <div class="theme-selector">
+                    <div class="theme-option theme-dark active" data-theme="dark"></div>
+                    <div class="theme-option theme-light" data-theme="light"></div>
+                    <div class="theme-option theme-high-contrast" data-theme="high-contrast"></div>
+                    <div class="theme-option theme-gradient" data-theme="gradient"></div>
                 </div>
             </div>
-
-            <div class="typing-indicator" id="typing-indicator">
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+            
+            <div class="modal-section" style="margin-top: 25px;">
+                <h3><i class="fas fa-robot"></i> Настройки AI</h3>
+                <div class="control-group" style="margin-top: 15px;">
+                    <label class="control-label">Температура:</label>
+                    <input type="range" id="temperature-slider" min="0.1" max="1" step="0.1" value="0.7" style="flex: 1;">
+                    <span id="temperature-value" style="min-width: 40px; text-align: center;">0.7</span>
                 </div>
             </div>
+            
+            <div class="modal-section" style="margin-top: 25px;">
+                <h3><i class="fas fa-keyboard"></i> Горячие клавиши</h3>
+                <div style="margin-top: 15px; color: var(--text-secondary); font-size: 0.9rem;">
+                    <p><strong>Ctrl+Enter</strong> - Отправить сообщение</p>
+                    <p><strong>Ctrl+K</strong> - Быстрые команды</p>
+                    <p><strong>Ctrl+S</strong> - Сохранить чат</p>
+                    <p><strong>Ctrl+E</strong> - Экспорт</p>
+                    <p><strong>Ctrl+L</strong> - Очистить чат</p>
+                    <p><strong>Ctrl+P</strong> - Режим презентации</p>
+                </div>
+            </div>
+            
+            <button class="ios-button" style="width: 100%; margin-top: 30px;" id="save-settings">
+                <i class="fas fa-save"></i> Сохранить настройки
+            </button>
+        </div>
+    </div>
 
-            <div class="input-area">
-                <textarea 
-                    id="message-input" 
-                    placeholder="Опишите вашу ситуацию в отношениях, знакомствах или вопросы о манипуляциях..." 
-                    maxlength="2000"
-                    rows="3"
-                ></textarea>
-                <button id="send-button">
-                    <i class="fas fa-paper-plane"></i> Отправить
-                </button>
+    <!-- Модальное окно экспорта -->
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="export-close">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-download"></i> Экспорт чата
+            </h2>
+            
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                Выберите формат для экспорта истории диалога:
+            </p>
+            
+            <div class="export-options">
+                <div class="export-option" data-format="pdf">
+                    <div class="export-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div style="font-weight: 600;">PDF</div>
+                    <div style="font-size: 0.8rem; color: var(--text-tertiary);">Документ для печати</div>
+                </div>
+                
+                <div class="export-option" data-format="markdown">
+                    <div class="export-icon">
+                        <i class="fab fa-markdown"></i>
+                    </div>
+                    <div style="font-weight: 600;">Markdown</div>
+                    <div style="font-size: 0.8rem; color: var(--text-tertiary);">Для документации</div>
+                </div>
+                
+                <div class="export-option" data-format="html">
+                    <div class="export-icon">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <div style="font-weight: 600;">HTML</div>
+                    <div style="font-size: 0.8rem; color: var(--text-tertiary);">Веб-страница</div>
+                </div>
+                
+                <div class="export-option" data-format="json">
+                    <div class="export-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div style="font-weight: 600;">JSON</div>
+                    <div style="font-size: 0.8rem; color: var(--text-tertiary);">Для разработки</div>
+                </div>
+            </div>
+            
+            <button class="ios-button secondary" style="width: 100%; margin-top: 20px;" id="export-cancel">
+                <i class="fas fa-times"></i> Отмена
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно статистики -->
+    <div class="modal" id="stats-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="stats-close">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-chart-line"></i> Статистика
+            </h2>
+            
+            <div class="stats-grid" style="margin-bottom: 25px;">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-messages">0</div>
+                    <div class="stat-label">Всего сообщений</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="avg-response">0с</div>
+                    <div class="stat-label">Среднее время ответа</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="user-messages">0</div>
+                    <div class="stat-label">Сообщений от вас</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="ai-messages">0</div>
+                    <div class="stat-label">Ответов AI</div>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 15px;">Активность по часам</h3>
+            <div style="background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md); padding: 20px; margin-bottom: 25px;">
+                <canvas id="activity-chart" style="width: 100%; height: 200px;"></canvas>
+            </div>
+            
+            <h3 style="margin-bottom: 15px;">Популярные темы</h3>
+            <div id="popular-topics" style="color: var(--text-secondary);">
+                Загрузка данных...
             </div>
         </div>
     </div>
 
-    <script>
-        // Простой рабочий код
-        class SimpleChatApp {
-            constructor() {
-                this.chatMessages = document.getElementById('chat-messages');
-                this.messageInput = document.getElementById('message-input');
-                this.sendButton = document.getElementById('send-button');
-                this.typingIndicator = document.getElementById('typing-indicator');
-                
-                this.init();
-            }
+    <!-- Навигация презентации -->
+    <div class="presentation-nav" style="display: none;">
+        <button class="ios-button small" id="prev-slide">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="ios-button small" id="next-slide">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="ios-button small secondary" id="exit-presentation">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Шапка приложения -->
+        <div class="app-header">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="app-title">
+                        <h1>Verdikt GPT</h1>
+                        <p>Эксперт по отношениям и психологии</p>
+                    </div>
+                </div>
+            </div>
             
+            <div class="header-right">
+                <button class="ios-button secondary" id="voice-input" title="Голосовой ввод">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                
+                <button class="ios-button secondary" id="voice-output" title="Озвучить ответ">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                
+                <button class="ios-button secondary" id="presentation-mode" title="Режим презентации">
+                    <i class="fas fa-expand"></i>
+                </button>
+                
+                <button class="ios-button secondary" id="settings-button" title="Настройки">
+                    <i class="fas fa-cog"></i>
+                </button>
+                
+                <button class="ios-button" id="new-chat">
+                    <i class="fas fa-plus"></i> Новый чат
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Боковая панель -->
+            <div class="sidebar">
+                <!-- Режимы AI -->
+                <div class="sidebar-card">
+                    <h3><i class="fas fa-sliders-h"></i> Режим консультации</h3>
+                    <div class="ai-modes">
+                        <div class="mode-item active" data-mode="balanced">
+                            <div class="mode-icon">
+                                <i class="fas fa-balance-scale"></i>
+                            </div>
+                            <div class="mode-info">
+                                <h4>Сбалансированный</h4>
+                                <p>Объективный анализ</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mode-item" data-mode="creative">
+                            <div class="mode-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="mode-info">
+                                <h4>Эмоциональный</h4>
+                                <p>Учет чувств и эмоций</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mode-item" data-mode="precise">
+                            <div class="mode-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="mode-info">
+                                <h4>Аналитический</h4>
+                                <p>Детальный разбор ситуации</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mode-item" data-mode="protective">
+                            <div class="mode-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="mode-info">
+                                <h4>Защитный</h4>
+                                <p>Распознавание манипуляций</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Быстрые команды -->
+                <div class="sidebar-card">
+                    <h3><i class="fas fa-terminal"></i> Быстрые команды</h3>
+                    <div class="quick-commands">
+                        <div class="command-item" data-command="/clear">/clear</div>
+                        <div class="command-item" data-command="/save">/save</div>
+                        <div class="command-item" data-command="/export">/export</div>
+                        <div class="command-item" data-command="/advice">/advice</div>
+                        <div class="command-item" data-command="/manipulation">/manipulation</div>
+                        <div class="command-item" data-command="/stats">/stats</div>
+                        <div class="command-item" data-command="/presentation">/presentation</div>
+                        <div class="command-item" data-command="/help">/help</div>
+                    </div>
+                </div>
+                
+                <!-- Достижения -->
+                <div class="sidebar-card">
+                    <h3><i class="fas fa-trophy"></i> Достижения</h3>
+                    <div class="achievements-grid">
+                        <div class="achievement-item unlocked">
+                            <div class="achievement-icon">🎯</div>
+                            <div class="achievement-name">Первый шаг</div>
+                            <div class="achievement-desc">Первая консультация</div>
+                        </div>
+                        
+                        <div class="achievement-item">
+                            <div class="achievement-icon">💬</div>
+                            <div class="achievement-name">Доверие</div>
+                            <div class="achievement-desc">10 личных вопросов</div>
+                        </div>
+                        
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🛡️</div>
+                            <div class="achievement-name">Защитник</div>
+                            <div class="achievement-desc">Распознал 5 манипуляций</div>
+                        </div>
+                        
+                        <div class="achievement-item">
+                            <div class="achievement-icon">💕</div>
+                            <div class="achievement-name">Романтик</div>
+                            <div class="achievement-desc">Помог в отношениях</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Статистика -->
+                <div class="sidebar-card">
+                    <h3><i class="fas fa-chart-bar"></i> Статистика</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="sidebar-messages">1</div>
+                            <div class="stat-label">Консультации</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="sidebar-time">—</div>
+                            <div class="stat-label">Время ответа</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="sidebar-saved">0</div>
+                            <div class="stat-label">Сохранено</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="sidebar-sessions">1</div>
+                            <div class="stat-label">Сессии</div>
+                        </div>
+                    </div>
+                    <button class="ios-button tertiary small" style="width: 100%; margin-top: 15px;" id="view-stats">
+                        <i class="fas fa-chart-line"></i> Подробная статистика
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Основная область чата -->
+            <div class="chat-area">
+                <!-- Панель управления -->
+                <div class="chat-controls">
+                    <div class="control-group">
+                        <label class="control-label">Состояние:</label>
+                        <span class="status-indicator" id="api-status" style="padding: 5px 12px; border-radius: 15px;">
+                            <i class="fas fa-circle"></i> Подключение...
+                        </span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Экспорт:</label>
+                        <button class="ios-button tertiary small" id="export-chat">
+                            <i class="fas fa-download"></i> Экспорт
+                        </button>
+                        <button class="ios-button tertiary small" id="save-chat">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Действия:</label>
+                        <button class="ios-button tertiary small" id="clear-chat">
+                            <i class="fas fa-eraser"></i> Очистить
+                        </button>
+                        <button class="ios-button tertiary small" id="share-chat">
+                            <i class="fas fa-share-alt"></i> Поделиться
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Контейнер чата -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-header-content">
+                            <div class="ai-avatar">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="chat-header-text">
+                                <h2>Verdikt GPT - Эксперт по отношениям</h2>
+                                <p>Специалист в психологии отношений, знакомств и распознавании манипуляций</p>
+                            </div>
+                        </div>
+                        
+                        <div class="voice-interface">
+                            <button class="voice-button" id="record-button" title="Запись голоса">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- История сообщений -->
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai-message" style="opacity: 1; transform: translateY(0);">
+                            <div class="message-actions">
+                                <button class="message-action" onclick="VerdiktChat.copyMessage(this)">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="message-action" onclick="VerdiktChat.speakMessage(this)">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                            </div>
+                            <div class="message-sender"><i class="fas fa-heart"></i> Эксперт по отношениям</div>
+                            <div class="message-content">Привет! 👋 Я - эксперт в области психологии отношений, знакомств и распознавания манипуляций. Я специализируюсь на:
+<br><br>
+💕 <strong>Отношениях</strong> - помощь в построении здоровых отношений, решение конфликтов, улучшение коммуникации
+<br><br>
+👥 <strong>Знакомствах</strong> - советы по онлайн и офлайн знакомствам, созданию привлекательного профиля, первому свиданию
+<br><br>
+🛡️ <strong>Манипуляциях</strong> - распознавание психологических манипуляций, защита от эмоционального насилия, установление границ
+<br><br>
+Расскажите, с какой ситуацией вы столкнулись? Я помогу разобраться с профессиональной точки зрения! ✨</div>
+                            <div class="message-time" id="initial-time">Сейчас</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Умные подсказки -->
+                    <div class="smart-suggestions" id="smart-suggestions">
+                        <div class="suggestion-item">Как понять, что мной манипулируют?</div>
+                        <div class="suggestion-item">Как правильно знакомиться в интернете?</div>
+                        <div class="suggestion-item">Как наладить отношения после ссоры?</div>
+                        <div class="suggestion-item">Как распознать токсичные отношения?</div>
+                    </div>
+                    
+                    <!-- Индикатор набора текста -->
+                    <div class="typing-indicator" id="typing-indicator">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Примеры вопросов -->
+                    <div class="examples">
+                        <h3><i class="fas fa-bolt"></i> Попробуйте спросить:</h3>
+                        <div class="example-buttons">
+                            <button class="example-button ios-button tertiary" data-question="Как распознать манипуляцию в отношениях?">
+                                <i class="fas fa-shield-alt"></i> Манипуляции
+                            </button>
+                            <button class="example-button ios-button tertiary" data-question="Как правильно вести себя на первом свидании?">
+                                <i class="fas fa-heart"></i> Первое свидание
+                            </button>
+                            <button class="example-button ios-button tertiary" data-question="Как установить здоровые границы в отношениях?">
+                                <i class="fas fa-user-shield"></i> Границы
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Панель ввода -->
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <textarea id="message-input" placeholder="Опишите вашу ситуацию в отношениях, знакомствах или вопросы о манипуляциях..." maxlength="2000" autocomplete="off"></textarea>
+                        </div>
+                        <div class="input-actions">
+                            <button class="ios-button secondary" id="attach-button" title="Прикрепить файл">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button class="ios-button" id="send-button" title="Отправить сообщение">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="copyright">
+                    &copy; 2026 Verdikt GPT - Эксперт по отношениям | Версия 2.0 | 
+                    <span id="offline-status" style="margin-left: 10px;">
+                        <i class="fas fa-wifi"></i> Онлайн
+                    </span>
+                </div>
+                <div class="footer-links">
+                    <a href="#" id="model-info"><i class="fas fa-robot"></i> О модели</a>
+                    <a href="#" id="keyboard-shortcuts"><i class="fas fa-keyboard"></i> Горячие клавиши</a>
+                    <a href="#" id="privacy-policy"><i class="fas fa-shield-alt"></i> Конфиденциальность</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Инициализация всех функций
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация подсветки синтаксиса
+            hljs.highlightAll();
+            
+            // Создание экземпляра приложения
+            const VerdiktChat = new VerdiktChatApp();
+            VerdiktChat.init();
+        });
+
+        // Основной класс приложения
+        class VerdiktChatApp {
+            constructor() {
+                // Конфигурация API
+                this.API_CONFIG = {
+                    url: 'https://openrouter.ai/api/v1/chat/completions',
+                    model: 'tngtech/deepseek-r1t2-chimera:free',
+                    apiKey: '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',
+                    maxTokens: 2000,
+                    temperature: 0.7
+                };
+
+                // Состояние приложения
+                this.state = {
+                    conversationHistory: [
+                        {
+                            role: "system",
+                            content: `Ты - профессиональный эксперт в области психологии отношений, знакомств и распознавания манипуляций. Твое имя Verdikt GPT.
+
+Твоя специализация:
+1. ОТНОШЕНИЯ:
+   - Построение и развитие здоровых отношений
+   - Решение конфликтов и кризисов в паре
+   - Улучшение коммуникации и взаимопонимания
+   - Восстановление после расставаний
+   - Семейная психология
+
+2. ЗНАКОМСТВА:
+   - Онлайн и офлайн знакомства
+   - Создание привлекательного профиля
+   - Подготовка к свиданиям
+   - Правила поведения на встречах
+   - Преодоление страхов и барьеров
+
+3. МАНИПУЛЯЦИИ:
+   - Распознавание психологических манипуляций
+   - Защита от эмоционального насилия
+   - Установление здоровых границ
+   - Работа с токсичными отношениями
+   - Восстановление самооценки
+
+ТЫ ОБЯЗАН:
+- Отвечать ТОЛЬКО на вопросы по указанным темам
+- Быть профессиональным, тактичным и этичным
+- Давать практические советы и рекомендации
+- Использовать научно обоснованные методы
+- Сохранять конфиденциальность
+- Быть нейтральным и объективным
+- Поддерживать и мотивировать пользователя
+
+Если вопрос НЕ относится к твоей специализации, вежливо откажись отвечать и предложи перейти к профильным темам.
+
+Отвечай на русском языке, используй эмодзи для лучшего восприятия, но не злоупотребляй ими. Будь точным, информативным и поддерживающим.`
+                        }
+                    ],
+                    currentMode: 'balanced',
+                    aiModes: {
+                        creative: { name: "Эмоциональный", temperature: 0.8, description: "Учет чувств и эмоций" },
+                        precise: { name: "Аналитический", temperature: 0.3, description: "Детальный разбор ситуации" },
+                        balanced: { name: "Сбалансированный", temperature: 0.7, description: "Объективный анализ" },
+                        protective: { name: "Защитный", temperature: 0.5, description: "Распознавание манипуляций" }
+                    },
+                    messageCount: 1,
+                    responseTimes: [],
+                    isApiConnected: true,
+                    isRecording: false,
+                    isSpeaking: false,
+                    achievements: {
+                        firstMessage: { unlocked: true, name: "Первый шаг", icon: "🎯", description: "Первая консультация" },
+                        activeUser: { unlocked: false, name: "Доверие", icon: "💬", description: "10 личных вопросов" },
+                        manipulationExpert: { unlocked: false, name: "Защитник", icon: "🛡️", description: "Распознал 5 манипуляций" },
+                        relationshipHelper: { unlocked: false, name: "Романтик", icon: "💕", description: "Помог в отношениях" },
+                        nightOwl: { unlocked: false, name: "Сова", icon: "🦉", description: "Общались ночью" },
+                        exporter: { unlocked: false, name: "Архивариус", icon: "📥", description: "Экспортировали чат" },
+                        presenter: { unlocked: false, name: "Презентатор", icon: "📊", description: "Использовали режим презентации" }
+                    },
+                    stats: {
+                        totalMessages: 1,
+                        userMessages: 0,
+                        aiMessages: 1,
+                        savedChats: 0,
+                        sessions: 1,
+                        manipulationRequests: 0,
+                        relationshipAdvice: 0,
+                        datingAdvice: 0,
+                        activityByHour: new Array(24).fill(0),
+                        popularTopics: {}
+                    },
+                    currentTheme: 'dark',
+                    isPresentationMode: false,
+                    currentSlide: 0,
+                    slides: []
+                };
+
+                // DOM элементы
+                this.elements = {
+                    chatMessages: document.getElementById('chat-messages'),
+                    messageInput: document.getElementById('message-input'),
+                    sendButton: document.getElementById('send-button'),
+                    recordButton: document.getElementById('record-button'),
+                    voiceInput: document.getElementById('voice-input'),
+                    voiceOutput: document.getElementById('voice-output'),
+                    clearChat: document.getElementById('clear-chat'),
+                    exportChat: document.getElementById('export-chat'),
+                    saveChat: document.getElementById('save-chat'),
+                    newChat: document.getElementById('new-chat'),
+                    settingsButton: document.getElementById('settings-button'),
+                    presentationMode: document.getElementById('presentation-mode'),
+                    viewStats: document.getElementById('view-stats'),
+                    notification: document.getElementById('notification'),
+                    notificationText: document.getElementById('notification-text'),
+                    apiStatus: document.getElementById('api-status'),
+                    smartSuggestions: document.getElementById('smart-suggestions'),
+                    typingIndicator: document.getElementById('typing-indicator'),
+                    achievementNotification: document.getElementById('achievement-notification'),
+                    prevSlide: document.getElementById('prev-slide'),
+                    nextSlide: document.getElementById('next-slide'),
+                    exitPresentation: document.getElementById('exit-presentation')
+                };
+
+                // Инициализация Web Speech API
+                this.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.speechSynthesis = window.speechSynthesis;
+                this.recognition = null;
+                
+                // Инициализация Chart.js
+                this.activityChart = null;
+            }
+
             init() {
-                this.sendButton.addEventListener('click', () => this.sendMessage());
-                this.messageInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
+                this.setupEventListeners();
+                this.loadFromLocalStorage();
+                this.setupSpeechRecognition();
+                this.setupBackgroundAnimations();
+                this.updateUI();
+                this.checkApiStatus();
+                this.setupKeyboardShortcuts();
+                this.setupServiceWorker();
+                
+                // Отметить активность текущего часа
+                const currentHour = new Date().getHours();
+                this.state.stats.activityByHour[currentHour]++;
+                this.saveToLocalStorage();
+                
+                console.log('Verdikt GPT - Эксперт по отношениям инициализирован');
+            }
+
+            setupEventListeners() {
+                // Отправка сообщения
+                this.elements.sendButton.addEventListener('click', () => this.sendMessage());
+                
+                // Голосовой ввод
+                this.elements.recordButton.addEventListener('click', () => this.toggleVoiceRecording());
+                this.elements.voiceInput.addEventListener('click', () => this.toggleVoiceRecording());
+                this.elements.voiceOutput.addEventListener('click', () => this.speakLastMessage());
+                
+                // Быстрые команды
+                document.querySelectorAll('.command-item').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const command = e.target.dataset.command;
+                        this.handleCommand(command);
+                    });
+                });
+                
+                // Режимы AI
+                document.querySelectorAll('.mode-item').forEach(mode => {
+                    mode.addEventListener('click', (e) => {
+                        const modeId = e.currentTarget.dataset.mode;
+                        this.setAIMode(modeId);
+                    });
+                });
+                
+                // Примеры вопросов
+                document.querySelectorAll('.example-button').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const question = e.currentTarget.dataset.question;
+                        this.elements.messageInput.value = question;
+                        this.elements.messageInput.focus();
+                    });
+                });
+                
+                // Управление чатом
+                this.elements.clearChat.addEventListener('click', () => this.clearChat());
+                this.elements.exportChat.addEventListener('click', () => this.showExportModal());
+                this.elements.saveChat.addEventListener('click', () => this.saveChat());
+                this.elements.newChat.addEventListener('click', () => this.createNewChat());
+                this.elements.settingsButton.addEventListener('click', () => this.showSettingsModal());
+                this.elements.presentationMode.addEventListener('click', () => this.togglePresentationMode());
+                this.elements.viewStats.addEventListener('click', () => this.showStatsModal());
+                
+                // Тема оформления
+                document.querySelectorAll('.theme-option').forEach(theme => {
+                    theme.addEventListener('click', (e) => {
+                        const theme = e.currentTarget.dataset.theme;
+                        this.setTheme(theme);
+                    });
+                });
+                
+                // Экспорт
+                document.querySelectorAll('.export-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        const format = e.currentTarget.dataset.format;
+                        this.exportChat(format);
+                    });
+                });
+                
+                // Модальные окна
+                document.getElementById('settings-close').addEventListener('click', () => this.hideModal('settings-modal'));
+                document.getElementById('export-close').addEventListener('click', () => this.hideModal('export-modal'));
+                document.getElementById('export-cancel').addEventListener('click', () => this.hideModal('export-modal'));
+                document.getElementById('stats-close').addEventListener('click', () => this.hideModal('stats-modal'));
+                document.getElementById('save-settings').addEventListener('click', () => this.saveSettings());
+                
+                // Навигация презентации
+                this.elements.prevSlide.addEventListener('click', () => this.prevSlide());
+                this.elements.nextSlide.addEventListener('click', () => this.nextSlide());
+                this.elements.exitPresentation.addEventListener('click', () => this.togglePresentationMode());
+                
+                // Обработка ввода текста
+                this.elements.messageInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
                         e.preventDefault();
                         this.sendMessage();
                     }
+                    
+                    // Автодополнение команд
+                    if (e.key === '/' && this.elements.messageInput.value === '') {
+                        this.showSmartSuggestions();
+                    }
                 });
                 
-                // Авторазмер textarea
-                this.messageInput.addEventListener('input', () => {
-                    this.messageInput.style.height = 'auto';
-                    this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 150) + 'px';
+                this.elements.messageInput.addEventListener('input', () => {
+                    // Автоматическая высота textarea
+                    this.elements.messageInput.style.height = 'auto';
+                    this.elements.messageInput.style.height = Math.min(this.elements.messageInput.scrollHeight, 200) + 'px';
+                    
+                    // Скрыть подсказки если есть текст
+                    if (this.elements.messageInput.value.length > 0) {
+                        this.hideSmartSuggestions();
+                    }
                 });
                 
-                console.log('Verdikt GPT запущен!');
+                // Обработка фокуса
+                this.elements.messageInput.addEventListener('focus', () => {
+                    if (this.elements.messageInput.value === '') {
+                        this.showSmartSuggestions();
+                    }
+                });
+                
+                this.elements.messageInput.addEventListener('blur', () => {
+                    setTimeout(() => this.hideSmartSuggestions(), 200);
+                });
+                
+                // Слежение за онлайн статусом
+                window.addEventListener('online', () => this.updateOnlineStatus(true));
+                window.addEventListener('offline', () => this.updateOnlineStatus(false));
+                
+                // Сохранение перед закрытием
+                window.addEventListener('beforeunload', () => this.saveToLocalStorage());
             }
-            
-            sendMessage() {
-                const message = this.messageInput.value.trim();
-                if (!message) return;
+
+            setupKeyboardShortcuts() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey || e.metaKey) {
+                        switch(e.key) {
+                            case 'Enter':
+                                e.preventDefault();
+                                this.sendMessage();
+                                break;
+                            case 'k':
+                                e.preventDefault();
+                                this.showQuickCommands();
+                                break;
+                            case 's':
+                                e.preventDefault();
+                                this.saveChat();
+                                break;
+                            case 'e':
+                                e.preventDefault();
+                                this.showExportModal();
+                                break;
+                            case 'l':
+                                e.preventDefault();
+                                this.clearChat();
+                                break;
+                            case 'p':
+                                e.preventDefault();
+                                this.togglePresentationMode();
+                                break;
+                        }
+                    }
+                    
+                    // Навигация в режиме презентации
+                    if (this.state.isPresentationMode) {
+                        switch(e.key) {
+                            case 'ArrowLeft':
+                                this.prevSlide();
+                                break;
+                            case 'ArrowRight':
+                                this.nextSlide();
+                                break;
+                            case 'Escape':
+                                this.togglePresentationMode();
+                                break;
+                        }
+                    }
+                });
+            }
+
+            setupSpeechRecognition() {
+                if (this.SpeechRecognition) {
+                    this.recognition = new this.SpeechRecognition();
+                    this.recognition.lang = 'ru-RU';
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.elements.messageInput.value = transcript;
+                        this.showNotification('Речь распознана: ' + transcript.substring(0, 50) + '...');
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error', event.error);
+                        this.showNotification('Ошибка распознавания речи', 'error');
+                    };
+                    
+                    this.recognition.onend = () => {
+                        if (this.state.isRecording) {
+                            this.toggleVoiceRecording();
+                        }
+                    };
+                }
+            }
+
+            setupServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('/sw.js').catch(console.error);
+                }
+            }
+
+            setupBackgroundAnimations() {
+                // Создаем плавающие сердечки
+                const heartsContainer = document.getElementById('floating-hearts');
+                for (let i = 0; i < 15; i++) {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '❤';
+                    heart.style.left = `${Math.random() * 100}%`;
+                    heart.style.animationDelay = `${Math.random() * 15}s`;
+                    heart.style.fontSize = `${10 + Math.random() * 20}px`;
+                    heartsContainer.appendChild(heart);
+                }
+
+                // Создаем частицы подключения
+                const particlesContainer = document.getElementById('connection-particles');
+                for (let i = 0; i < 30; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    particle.style.animationDelay = `${Math.random() * 3}s`;
+                    particlesContainer.appendChild(particle);
+                }
+            }
+
+            async checkApiStatus() {
+                // Показать анимацию подключения
+                this.elements.apiStatus.innerHTML = '<i class="fas fa-circle"></i> Подключение...';
+                this.elements.apiStatus.classList.add('api-connecting');
+                this.elements.apiStatus.classList.remove('api-error');
                 
-                // Добавляем сообщение пользователя
+                // Искусственная задержка для демонстрации анимации
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                try {
+                    // Более простая проверка API - просто HEAD запрос к endpoint
+                    const testResponse = await fetch(this.API_CONFIG.url, {
+                        method: 'OPTIONS',
+                        headers: {
+                            'Authorization': `Bearer ${this.API_CONFIG.apiKey}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (testResponse.ok || testResponse.status === 404 || testResponse.status === 405) {
+                        // 404/405 тоже ок, главное что endpoint отвечает
+                        this.state.isApiConnected = true;
+                        this.elements.apiStatus.innerHTML = '<i class="fas fa-circle"></i> API подключен';
+                        this.elements.apiStatus.style.background = 'rgba(34, 197, 94, 0.15)';
+                        this.elements.apiStatus.style.color = '#4ade80';
+                        this.elements.apiStatus.classList.remove('api-connecting');
+                        
+                        // Анимация успешного подключения
+                        this.showConnectionSuccessAnimation();
+                    } else {
+                        throw new Error(`HTTP ${testResponse.status}`);
+                    }
+                } catch (error) {
+                    console.log('API check error:', error);
+                    // Даже если проверка не прошла, это не значит что API не работает
+                    // Попробуем отправить тестовое сообщение
+                    try {
+                        const testMessage = await fetch(this.API_CONFIG.url, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${this.API_CONFIG.apiKey}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                model: this.API_CONFIG.model,
+                                messages: [
+                                    {
+                                        role: "user",
+                                        content: "Привет"
+                                    }
+                                ],
+                                max_tokens: 10
+                            })
+                        });
+                        
+                        if (testMessage.ok) {
+                            this.state.isApiConnected = true;
+                            this.elements.apiStatus.innerHTML = '<i class="fas fa-circle"></i> API подключен';
+                            this.elements.apiStatus.style.background = 'rgba(34, 197, 94, 0.15)';
+                            this.elements.apiStatus.style.color = '#4ade80';
+                            this.elements.apiStatus.classList.remove('api-connecting');
+                            this.showConnectionSuccessAnimation();
+                        } else {
+                            throw new Error();
+                        }
+                    } catch {
+                        this.state.isApiConnected = false;
+                        this.elements.apiStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ошибка подключения';
+                        this.elements.apiStatus.classList.remove('api-connecting');
+                        this.elements.apiStatus.classList.add('api-error');
+                    }
+                }
+            }
+
+            showConnectionSuccessAnimation() {
+                // Временный эффект успешного подключения
+                const originalBackground = this.elements.apiStatus.style.background;
+                const originalColor = this.elements.apiStatus.style.color;
+                
+                this.elements.apiStatus.style.background = 'rgba(34, 197, 94, 0.3)';
+                this.elements.apiStatus.style.color = '#4ade80';
+                this.elements.apiStatus.style.boxShadow = '0 0 20px rgba(34, 197, 94, 0.5)';
+                
+                setTimeout(() => {
+                    this.elements.apiStatus.style.boxShadow = '';
+                }, 1000);
+                
+                // Создаем частицы успеха
+                const particlesContainer = document.getElementById('connection-particles');
+                for (let i = 0; i < 10; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = '50%';
+                    particle.style.top = '50%';
+                    particle.style.background = '#4ade80';
+                    particle.style.width = '6px';
+                    particle.style.height = '6px';
+                    particle.style.animation = 'particleFlow 1.5s ease-out forwards';
+                    particlesContainer.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1500);
+                }
+                
+                this.showNotification('API успешно подключен! ✅', 'success');
+            }
+
+            async sendMessage() {
+                const message = this.elements.messageInput.value.trim();
+                
+                if (!message) {
+                    this.showNotification('Введите сообщение', 'warning');
+                    return;
+                }
+                
+                // Проверка команд
+                if (this.handleCommand(message)) {
+                    this.elements.messageInput.value = '';
+                    return;
+                }
+                
+                // Проверка темы сообщения
+                if (!this.isTopicRelevant(message)) {
+                    this.showNotification('Я специализируюсь только на отношениях, знакомствах и манипуляциях. Пожалуйста, задайте вопрос по этим темам.', 'warning');
+                    return;
+                }
+                
+                // Добавление сообщения пользователя
                 this.addMessage(message, 'user');
                 
-                // Очищаем поле ввода
-                this.messageInput.value = '';
-                this.messageInput.style.height = 'auto';
+                // Сохранение в историю
+                this.state.conversationHistory.push({ role: "user", content: message });
+                this.state.messageCount++;
+                this.state.stats.totalMessages++;
+                this.state.stats.userMessages++;
                 
-                // Показываем индикатор набора
-                this.showTyping();
+                // Обновление статистики по темам
+                this.updateTopicStats(message);
                 
-                // Имитируем ответ AI (замените на реальный API)
-                setTimeout(() => {
-                    this.hideTyping();
-                    const response = this.generateResponse(message);
-                    this.addMessage(response, 'ai');
-                }, 1500);
-            }
-            
-            addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${sender}-message`;
+                // Отметить активность текущего часа
+                const currentHour = new Date().getHours();
+                this.state.stats.activityByHour[currentHour]++;
                 
-                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                // Проверка достижений
+                this.checkAchievements();
                 
-                messageDiv.innerHTML = `
-                    <div style="font-weight: 600; color: ${sender === 'user' ? '#8b5cf6' : '#ec4899'}; margin-bottom: 10px;">
-                        <i class="fas fa-${sender === 'user' ? 'user' : 'heart'}"></i> 
-                        ${sender === 'user' ? 'Вы' : 'Эксперт по отношениям'}
-                    </div>
-                    <div style="line-height: 1.6;">${this.formatText(text)}</div>
-                    <div style="text-align: right; margin-top: 10px; font-size: 0.8rem; color: #94a3b8;">
-                        ${time}
-                    </div>
-                `;
+                // Очистка поля ввода
+                this.elements.messageInput.value = '';
+                this.elements.messageInput.style.height = 'auto';
                 
-                this.chatMessages.appendChild(messageDiv);
+                // Показать индикатор набора
+                this.showTypingIndicator();
+                
+                try {
+                    // Получение ответа от AI
+                    const startTime = Date.now();
+                    const aiResponse = await this.getAIResponse(this.state.conversationHistory);
+                    const responseTime = (Date.now() - startTime) / 1000;
+                    
+                    this.state.responseTimes.push(responseTime);
+                    
+                    // Скрыть индикатор
+                    this.hideTypingIndicator();
+                    
+                    // Добавление ответа AI
+                    this.addMessage(aiResponse, 'ai');
+                    
+                    // Сохранение в историю
+                    this.state.conversationHistory.push({ role: "assistant", content: aiResponse });
+                    this.state.stats.totalMessages++;
+                    this.state.stats.aiMessages++;
+                    
+                    // Ограничение истории
+                    if (this.state.conversationHistory.length > 20) {
+                        this.state.conversationHistory = [
+                            this.state.conversationHistory[0],
+                            ...this.state.conversationHistory.slice(-18)
+                        ];
+                    }
+                    
+                    this.showNotification('Ответ получен ✅', 'success');
+                    this.updateUI();
+                    this.saveToLocalStorage();
+                    
+                } catch (error) {
+                    this.hideTypingIndicator();
+                    this.addMessage(`Извините, произошла ошибка при подключении к API. Пожалуйста, проверьте ваше интернет-соединение и попробуйте еще раз.`, 'ai');
+                    this.showNotification('Ошибка при получении ответа ❌', 'error');
+                    console.error('API Error:', error);
+                    
+                    this.state.isApiConnected = false;
+                    this.elements.apiStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ошибка API';
+                    this.elements.apiStatus.style.background = 'rgba(239, 68, 68, 0.15)';
+                    this.elements.apiStatus.style.color = '#f87171';
+                    this.elements.apiStatus.classList.add('api-error');
+                }
+                
                 this.scrollToBottom();
             }
-            
-            formatText(text) {
+
+            isTopicRelevant(message) {
+                const messageLower = message.toLowerCase();
+                const relevantTopics = [
+                    // Отношения
+                    'отношени', 'любов', 'брак', 'семь', 'пар', 'встреча', 'расставан',
+                    'ревност', 'довери', 'обид', 'ссор', 'конфликт', 'кризис',
+                    'верност', 'измен', 'секс', 'интим', 'родител', 'дети',
+                    'свекр', 'тещ', 'муж', 'жена', 'мужчин', 'женщин',
+                    
+                    // Знакомства
+                    'знакомств', 'свидан', 'встреч', 'тинд', 'бад', 'приложен',
+                    'профил', 'анкет', 'перв', 'втор', 'свидан', 'роман',
+                    'флирт', 'симпати', 'нравит', 'влюблен', 'ухаживан',
+                    'познаком', 'встрет', 'познаком',
+                    
+                    // Манипуляции
+                    'манипуляц', 'токсичн', 'абью', 'насил', 'давлен',
+                    'шантаж', 'вина', 'обид', 'контрол', 'завис', 'унижен',
+                    'оскорбл', 'газлайтинг', 'нарцис', 'психолог', 'границ',
+                    'уважен', 'достоинств', 'самооцен', 'психологическ',
+                    
+                    // Общие психологические термины
+                    'психолог', 'эмоц', 'чувств', 'общен', 'коммуникац',
+                    'довери', 'уважен', 'пониман', 'поддерж', 'совет',
+                    'помощ', 'консультац', 'эксперт', 'специалист'
+                ];
+                
+                return relevantTopics.some(topic => messageLower.includes(topic));
+            }
+
+            updateTopicStats(message) {
+                const messageLower = message.toLowerCase();
+                
+                if (messageLower.includes('манипуляц') || messageLower.includes('токсичн') || messageLower.includes('абью')) {
+                    this.state.stats.manipulationRequests++;
+                    this.state.stats.manipulationRequests === 5 && this.unlockAchievement('manipulationExpert');
+                }
+                
+                if (messageLower.includes('отношени') || messageLower.includes('любов') || messageLower.includes('брак')) {
+                    this.state.stats.relationshipAdvice++;
+                    this.state.stats.relationshipAdvice === 3 && this.unlockAchievement('relationshipHelper');
+                }
+                
+                if (messageLower.includes('знакомств') || messageLower.includes('свидан') || messageLower.includes('тинд')) {
+                    this.state.stats.datingAdvice++;
+                }
+            }
+
+            async getAIResponse(messages) {
+                const response = await fetch(this.API_CONFIG.url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${this.API_CONFIG.apiKey}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.origin,
+                        'X-Title': 'Verdikt GPT Chat'
+                    },
+                    body: JSON.stringify({
+                        model: this.API_CONFIG.model,
+                        messages: messages,
+                        max_tokens: this.API_CONFIG.maxTokens,
+                        temperature: this.state.aiModes[this.state.currentMode].temperature,
+                        stream: false
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Response Error:', errorText);
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            }
+
+            addMessage(content, sender) {
+                const messageId = 'msg-' + Date.now();
+                const time = this.getCurrentTime();
+                
+                const messageElement = document.createElement('div');
+                messageElement.className = `message ${sender}-message`;
+                messageElement.id = messageId;
+                
+                messageElement.innerHTML = `
+                    <div class="message-actions">
+                        <button class="message-action" onclick="VerdiktChat.copyMessage('${messageId}')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="message-action" onclick="VerdiktChat.speakMessage('${messageId}')">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <button class="message-action" onclick="VerdiktChat.regenerateMessage('${messageId}')">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                    <div class="message-sender">
+                        <i class="fas fa-${sender === 'user' ? 'user' : 'heart'}"></i>
+                        ${sender === 'user' ? 'Вы' : 'Эксперт по отношениям'}
+                    </div>
+                    <div class="message-content">${this.formatMessage(content)}</div>
+                    <div class="message-time">${time}</div>
+                `;
+                
+                this.elements.chatMessages.appendChild(messageElement);
+                
+                // Анимация
+                setTimeout(() => {
+                    messageElement.style.animation = 'messageAppear 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                }, 10);
+                
+                // Подсветка синтаксиса
+                setTimeout(() => {
+                    hljs.highlightAll();
+                }, 100);
+                
+                this.scrollToBottom();
+            }
+
+            formatMessage(text) {
                 return text
                     .replace(/\n/g, '<br>')
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/`{3}([\s\S]*?)`{3}/g, '<pre><code>$1</code></pre>')
+                    .replace(/`([^`]+)`/g, '<code>$1</code>');
             }
-            
-            generateResponse(userMessage) {
-                const lowerMessage = userMessage.toLowerCase();
-                
-                // Простые ответы для демонстрации
-                if (lowerMessage.includes('манипуляц') || lowerMessage.includes('манипулируют')) {
-                    return `Признаки манипуляции в отношениях:
-                    
-1. 🚨 **Газлайтинг** - отрицание реальности, заставляют сомневаться в своих чувствах
-2. ⚖️ **Чувство вины** - постоянные упрёки и обвинения
-3. 🔄 **Двойные стандарты** - правила для вас, но не для них
-4. 🎭 **Эмоциональный шантаж** - "Если ты меня любишь, то..." 
 
-Важно установить чёткие границы и не бояться говорить "нет". Хотите подробнее разобрать вашу ситуацию?`;
+            toggleVoiceRecording() {
+                if (!this.recognition) {
+                    this.showNotification('Голосовой ввод не поддерживается в вашем браузере', 'error');
+                    return;
                 }
                 
-                if (lowerMessage.includes('отношен') || lowerMessage.includes('любов')) {
-                    return `Здоровые отношения строятся на трёх китах:
-                    
-💖 **Доверие** - возможность быть собой без страха осуждения
-🗣️ **Коммуникация** - открытое обсуждение чувств и проблем
-⚖️ **Баланс** - равноправие и взаимное уважение
-
-Расскажите подробнее о вашей ситуации, и я помогу найти решение!`;
+                if (!this.state.isRecording) {
+                    this.state.isRecording = true;
+                    this.elements.recordButton.classList.add('recording');
+                    this.elements.recordButton.innerHTML = '<i class="fas fa-stop"></i>';
+                    this.recognition.start();
+                    this.showNotification('Запись началась... 🎤', 'info');
+                } else {
+                    this.state.isRecording = false;
+                    this.elements.recordButton.classList.remove('recording');
+                    this.elements.recordButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                    this.recognition.stop();
+                    this.showNotification('Запись остановлена', 'info');
                 }
-                
-                if (lowerMessage.includes('знакомств') || lowerMessage.includes('свидан')) {
-                    return `Советы для успешных знакомств:
-                    
-1. 🌟 **Будьте собой** - не пытайтесь произвести впечатление, будьте искренни
-2. 👂 **Слушайте активно** - проявляйте интерес к собеседнику
-3. 💬 **Задавайте открытые вопросы** - вместо "Тебе нравится кино?" спросите "Какой фильм произвёл на тебя наибольшее впечатление?"
-4. 😊 **Улыбайтесь** - это создаёт положительную атмосферу
-
-Помните: качество важнее количества!`;
-                }
-                
-                // Общий ответ
-                return `Спасибо за ваш вопрос! Как эксперт по отношениям, я могу помочь вам:
-
-• 🛡️ Распознать манипуляции и установить здоровые границы
-• 💕 Улучшить коммуникацию в отношениях
-• 👥 Наладить процесс знакомств и свиданий
-• 🧠 Поработать с самооценкой и уверенностью в себе
-
-Расскажите подробнее, что именно вас беспокоит? Я готов помочь!`;
             }
-            
-            showTyping() {
-                this.typingIndicator.style.display = 'block';
+
+            speakMessage(messageId) {
+                if (this.state.isSpeaking) {
+                    this.speechSynthesis.cancel();
+                    this.state.isSpeaking = false;
+                    return;
+                }
+                
+                const messageElement = document.getElementById(messageId);
+                if (!messageElement) return;
+                
+                const messageText = messageElement.querySelector('.message-content').textContent;
+                
+                const utterance = new SpeechSynthesisUtterance(messageText);
+                utterance.lang = 'ru-RU';
+                utterance.rate = 1;
+                utterance.pitch = 1;
+                
+                utterance.onstart = () => {
+                    this.state.isSpeaking = true;
+                    this.showNotification('Озвучивание началось... 🔊', 'info');
+                };
+                
+                utterance.onend = () => {
+                    this.state.isSpeaking = false;
+                };
+                
+                this.speechSynthesis.speak(utterance);
+            }
+
+            speakLastMessage() {
+                const messages = this.elements.chatMessages.querySelectorAll('.ai-message');
+                if (messages.length > 0) {
+                    const lastMessage = messages[messages.length - 1];
+                    this.speakMessage(lastMessage.id);
+                }
+            }
+
+            handleCommand(command) {
+                const parts = command.split(' ');
+                const cmd = parts[0];
+                const args = parts.slice(1);
+                
+                switch(cmd) {
+                    case '/clear':
+                        this.clearChat();
+                        break;
+                    case '/save':
+                        this.saveChat();
+                        break;
+                    case '/export':
+                        this.showExportModal();
+                        break;
+                    case '/advice':
+                        this.setAIMode('balanced');
+                        this.elements.messageInput.value = 'Нужен совет по отношениям...';
+                        this.elements.messageInput.focus();
+                        break;
+                    case '/manipulation':
+                        this.setAIMode('protective');
+                        this.elements.messageInput.value = 'Как понять, что мной манипулируют?';
+                        this.elements.messageInput.focus();
+                        break;
+                    case '/stats':
+                        this.showStatsModal();
+                        break;
+                    case '/presentation':
+                        this.togglePresentationMode();
+                        break;
+                    case '/help':
+                        this.showNotification('Доступные команды: /clear, /save, /export, /advice, /manipulation, /stats, /presentation, /help', 'info');
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+
+            setAIMode(modeId) {
+                this.state.currentMode = modeId;
+                
+                // Обновление UI
+                document.querySelectorAll('.mode-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`.mode-item[data-mode="${modeId}"]`).classList.add('active');
+                
+                // Обновление настроек API
+                this.API_CONFIG.temperature = this.state.aiModes[modeId].temperature;
+                
+                this.showNotification(`Режим изменен на: ${this.state.aiModes[modeId].name}`, 'info');
+            }
+
+            clearChat() {
+                if (confirm('Очистить всю историю диалога? Это действие нельзя отменить.')) {
+                    this.state.conversationHistory = [
+                        {
+                            role: "system",
+                            content: `Ты - профессиональный эксперт в области психологии отношений, знакомств и распознавания манипуляций. Твое имя Verdikt GPT.
+
+Твоя специализация:
+1. ОТНОШЕНИЯ:
+   - Построение и развитие здоровых отношений
+   - Решение конфликтов и кризисов в паре
+   - Улучшение коммуникации и взаимопонимания
+   - Восстановление после расставаний
+   - Семейная психология
+
+2. ЗНАКОМСТВА:
+   - Онлайн и офлайн знакомства
+   - Создание привлекательного профиля
+   - Подготовка к свиданиям
+   - Правила поведения на встречах
+   - Преодоление страхов и барьеров
+
+3. МАНИПУЛЯЦИИ:
+   - Распознавание психологических манипуляций
+   - Защита от эмоционального насилия
+   - Установление здоровых границ
+   - Работа с токсичными отношениями
+   - Восстановление самооценки
+
+ТЫ ОБЯЗАН:
+- Отвечать ТОЛЬКО на вопросы по указанным темам
+- Быть профессиональным, тактичным и этичным
+- Давать практические советы и рекомендации
+- Использовать научно обоснованные методы
+- Сохранять конфиденциальность
+- Быть нейтральным и объективным
+- Поддерживать и мотивировать пользователя
+
+Если вопрос НЕ относится к твоей специализации, вежливо откажись отвечать и предложи перейти к профильным темам.`
+                        }
+                    ];
+                    this.state.messageCount = 1;
+                    this.state.stats.totalMessages = 1;
+                    this.state.stats.userMessages = 0;
+                    this.state.stats.aiMessages = 1;
+                    
+                    this.elements.chatMessages.innerHTML = `
+                        <div class="message ai-message" style="opacity: 1; transform: translateY(0);">
+                            <div class="message-actions">
+                                <button class="message-action" onclick="VerdiktChat.copyMessage(this)">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="message-action" onclick="VerdiktChat.speakMessage(this)">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                            </div>
+                            <div class="message-sender"><i class="fas fa-heart"></i> Эксперт по отношениям</div>
+                            <div class="message-content">Чат очищен! Я готов помочь с вопросами об отношениях, знакомствах и манипуляциях. Расскажите, что вас беспокоит? 💕</div>
+                            <div class="message-time">${this.getCurrentTime()}</div>
+                        </div>
+                    `;
+                    
+                    this.showNotification('Чат очищен 🗑️', 'info');
+                    this.updateUI();
+                    this.saveToLocalStorage();
+                }
+            }
+
+            saveChat() {
+                const chatData = {
+                    id: 'chat-' + Date.now(),
+                    title: 'Консультация от ' + new Date().toLocaleString(),
+                    messages: this.state.conversationHistory.filter(msg => msg.role !== 'system'),
+                    timestamp: Date.now(),
+                    stats: { ...this.state.stats }
+                };
+                
+                const savedChats = JSON.parse(localStorage.getItem('verdikt_saved_chats') || '[]');
+                savedChats.push(chatData);
+                localStorage.setItem('verdikt_saved_chats', JSON.stringify(savedChats));
+                
+                this.state.stats.savedChats++;
+                this.unlockAchievement('exporter');
+                this.showNotification('Консультация сохранена 📁', 'success');
+                this.updateUI();
+            }
+
+            createNewChat() {
+                this.clearChat();
+                this.showNotification('Новая консультация начата', 'info');
+            }
+
+            exportChat(format) {
+                const chatContent = this.state.conversationHistory
+                    .filter(msg => msg.role !== 'system')
+                    .map(msg => `${msg.role === 'user' ? 'Вы' : 'Эксперт'}: ${msg.content}`)
+                    .join('\n\n');
+                
+                let content, mimeType, extension;
+                
+                switch(format) {
+                    case 'pdf':
+                        // Для PDF используем window.print()
+                        window.print();
+                        return;
+                    case 'markdown':
+                        content = `# Консультация по отношениям - Verdikt GPT\n\n${chatContent}`;
+                        mimeType = 'text/markdown';
+                        extension = 'md';
+                        break;
+                    case 'html':
+                        content = `
+                            <!DOCTYPE html>
+                            <html>
+                                <head>
+                                    <meta charset="UTF-8">
+                                    <title>Консультация по отношениям - Verdikt GPT</title>
+                                    <style>
+                                        body { font-family: Arial, sans-serif; padding: 20px; background: #fdf2f8; }
+                                        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
+                                        .user { background: #ec4899; color: white; }
+                                        .ai { background: #fce7f3; }
+                                    </style>
+                                </head>
+                                <body>
+                                    <h1 style="color: #ec4899;">Консультация по отношениям</h1>
+                                    <div>${chatContent.replace(/\n/g, '<br>')}</div>
+                                </body>
+                            </html>
+                        `;
+                        mimeType = 'text/html';
+                        extension = 'html';
+                        break;
+                    case 'json':
+                        content = JSON.stringify({
+                            chat: this.state.conversationHistory.filter(msg => msg.role !== 'system'),
+                            metadata: {
+                                exported: new Date().toISOString(),
+                                totalMessages: this.state.stats.totalMessages,
+                                topics: {
+                                    manipulations: this.state.stats.manipulationRequests,
+                                    relationships: this.state.stats.relationshipAdvice,
+                                    dating: this.state.stats.datingAdvice
+                                }
+                            }
+                        }, null, 2);
+                        mimeType = 'application/json';
+                        extension = 'json';
+                        break;
+                }
+                
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `verdikt-консультация-${new Date().toISOString().split('T')[0]}.${extension}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.hideModal('export-modal');
+                this.showNotification(`Консультация экспортирована в ${format.toUpperCase()} 📥`, 'success');
+            }
+
+            setTheme(theme) {
+                this.state.currentTheme = theme;
+                document.body.setAttribute('data-theme', theme);
+                document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                document.querySelector(`.theme-option[data-theme="${theme}"]`).classList.add('active');
+                localStorage.setItem('verdikt_theme', theme);
+            }
+
+            togglePresentationMode() {
+                this.state.isPresentationMode = !this.state.isPresentationMode;
+                
+                if (this.state.isPresentationMode) {
+                    document.body.classList.add('presentation-mode');
+                    document.querySelector('.presentation-nav').style.display = 'flex';
+                    this.createSlides();
+                    this.showSlide(0);
+                    this.unlockAchievement('presenter');
+                    this.showNotification('Режим презентации активирован 📊', 'info');
+                } else {
+                    document.body.classList.remove('presentation-mode');
+                    document.querySelector('.presentation-nav').style.display = 'none';
+                    this.showNotification('Режим презентации выключен', 'info');
+                }
+            }
+
+            createSlides() {
+                this.state.slides = [];
+                const messages = this.elements.chatMessages.querySelectorAll('.message');
+                
+                messages.forEach((msg, index) => {
+                    this.state.slides.push({
+                        content: msg.innerHTML,
+                        index: index
+                    });
+                });
+                
+                this.state.currentSlide = 0;
+            }
+
+            showSlide(index) {
+                if (index >= 0 && index < this.state.slides.length) {
+                    this.state.currentSlide = index;
+                    this.elements.chatMessages.innerHTML = this.state.slides[index].content;
+                    this.elements.chatMessages.scrollTop = 0;
+                }
+            }
+
+            prevSlide() {
+                this.showSlide(this.state.currentSlide - 1);
+            }
+
+            nextSlide() {
+                this.showSlide(this.state.currentSlide + 1);
+            }
+
+            checkAchievements() {
+                // Проверка активного пользователя
+                if (this.state.stats.userMessages >= 10 && !this.state.achievements.activeUser.unlocked) {
+                    this.unlockAchievement('activeUser');
+                }
+                
+                // Проверка совы
+                const currentHour = new Date().getHours();
+                if ((currentHour >= 23 || currentHour <= 5) && !this.state.achievements.nightOwl.unlocked) {
+                    this.unlockAchievement('nightOwl');
+                }
+            }
+
+            unlockAchievement(achievementId) {
+                if (!this.state.achievements[achievementId]) return;
+                
+                this.state.achievements[achievementId].unlocked = true;
+                
+                // Показать уведомление
+                const achievement = this.state.achievements[achievementId];
+                document.getElementById('achievement-icon').textContent = achievement.icon;
+                document.getElementById('achievement-title').textContent = achievement.name;
+                document.getElementById('achievement-desc').textContent = achievement.description;
+                
+                const notification = document.getElementById('achievement-notification');
+                notification.style.display = 'flex';
+                notification.style.animation = 'none';
+                setTimeout(() => {
+                    notification.style.animation = 'achievementSlide 3s ease';
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 3000);
+                }, 10);
+                
+                // Обновить UI
+                this.updateAchievementsUI();
+                this.saveToLocalStorage();
+            }
+
+            showSmartSuggestions() {
+                this.elements.smartSuggestions.style.display = 'block';
+                
+                // Добавить обработчики
+                const suggestions = this.elements.smartSuggestions.querySelectorAll('.suggestion-item');
+                suggestions.forEach((suggestion, index) => {
+                    suggestion.onclick = () => {
+                        this.elements.messageInput.value = suggestion.textContent;
+                        this.hideSmartSuggestions();
+                        this.elements.messageInput.focus();
+                    };
+                });
+            }
+
+            hideSmartSuggestions() {
+                this.elements.smartSuggestions.style.display = 'none';
+            }
+
+            showQuickCommands() {
+                const commands = [
+                    '/clear - Очистить чат',
+                    '/save - Сохранить чат',
+                    '/export - Экспорт в разные форматы',
+                    '/advice - Совет по отношениям',
+                    '/manipulation - Распознавание манипуляций',
+                    '/stats - Статистика',
+                    '/presentation - Режим презентации',
+                    '/help - Помощь по командам'
+                ];
+                
+                alert('Доступные команды:\n\n' + commands.join('\n'));
+            }
+
+            updateOnlineStatus(isOnline) {
+                const statusElement = document.getElementById('offline-status');
+                if (isOnline) {
+                    statusElement.innerHTML = '<i class="fas fa-wifi"></i> Онлайн';
+                    statusElement.style.color = '#4ade80';
+                } else {
+                    statusElement.innerHTML = '<i class="fas fa-wifi-slash"></i> Офлайн';
+                    statusElement.style.color = '#f87171';
+                }
+            }
+
+            showModal(modalId) {
+                document.getElementById(modalId).classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            hideModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            showSettingsModal() {
+                document.getElementById('temperature-slider').value = this.API_CONFIG.temperature;
+                document.getElementById('temperature-value').textContent = this.API_CONFIG.temperature;
+                this.showModal('settings-modal');
+            }
+
+            showExportModal() {
+                this.showModal('export-modal');
+            }
+
+            showStatsModal() {
+                // Обновить данные
+                document.getElementById('total-messages').textContent = this.state.stats.totalMessages;
+                document.getElementById('avg-response').textContent = 
+                    this.state.responseTimes.length > 0 
+                    ? (this.state.responseTimes.reduce((a, b) => a + b, 0) / this.state.responseTimes.length).toFixed(1) + 'с'
+                    : '0с';
+                document.getElementById('user-messages').textContent = this.state.stats.userMessages;
+                document.getElementById('ai-messages').textContent = this.state.stats.aiMessages;
+                
+                // Обновить график
+                this.updateActivityChart();
+                
+                // Обновить популярные темы
+                this.updatePopularTopics();
+                
+                this.showModal('stats-modal');
+            }
+
+            updateActivityChart() {
+                const ctx = document.getElementById('activity-chart').getContext('2d');
+                
+                if (this.activityChart) {
+                    this.activityChart.destroy();
+                }
+                
+                this.activityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: 24}, (_, i) => i + ':00'),
+                        datasets: [{
+                            label: 'Активность по часам',
+                            data: this.state.stats.activityByHour,
+                            borderColor: '#ec4899',
+                            backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: 'var(--text-secondary)'
+                                },
+                                grid: {
+                                    color: 'var(--border-color)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: 'var(--text-secondary)',
+                                    maxRotation: 45
+                                },
+                                grid: {
+                                    color: 'var(--border-color)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            updatePopularTopics() {
+                const topicsElement = document.getElementById('popular-topics');
+                let topicsHTML = '';
+                
+                if (this.state.stats.manipulationRequests > 0) {
+                    topicsHTML += `<div style="margin-bottom: 10px;">🛡️ Манипуляции: ${this.state.stats.manipulationRequests} запросов</div>`;
+                }
+                
+                if (this.state.stats.relationshipAdvice > 0) {
+                    topicsHTML += `<div style="margin-bottom: 10px;">💕 Отношения: ${this.state.stats.relationshipAdvice} советов</div>`;
+                }
+                
+                if (this.state.stats.datingAdvice > 0) {
+                    topicsHTML += `<div style="margin-bottom: 10px;">👥 Знакомства: ${this.state.stats.datingAdvice} консультаций</div>`;
+                }
+                
+                if (!topicsHTML) {
+                    topicsHTML = 'Пока нет данных о популярных темах';
+                }
+                
+                topicsElement.innerHTML = topicsHTML;
+            }
+
+            saveSettings() {
+                const temperature = parseFloat(document.getElementById('temperature-slider').value);
+                this.API_CONFIG.temperature = temperature;
+                this.hideModal('settings-modal');
+                this.showNotification('Настройки сохранены ✅', 'success');
+            }
+
+            updateUI() {
+                // Обновить счетчики
+                document.getElementById('sidebar-messages').textContent = this.state.stats.totalMessages;
+                document.getElementById('sidebar-time').textContent = 
+                    this.state.responseTimes.length > 0 
+                    ? (this.state.responseTimes.reduce((a, b) => a + b, 0) / this.state.responseTimes.length).toFixed(1) + 'с'
+                    : '—';
+                document.getElementById('sidebar-saved').textContent = this.state.stats.savedChats;
+                document.getElementById('sidebar-sessions').textContent = this.state.stats.sessions;
+                
+                // Обновить достижения
+                this.updateAchievementsUI();
+            }
+
+            updateAchievementsUI() {
+                document.querySelectorAll('.achievement-item').forEach(item => {
+                    const achievementName = item.querySelector('.achievement-name').textContent;
+                    const achievementId = this.getAchievementIdByName(achievementName);
+                    
+                    if (achievementId && this.state.achievements[achievementId]?.unlocked) {
+                        item.classList.add('unlocked');
+                    } else {
+                        item.classList.remove('unlocked');
+                    }
+                });
+            }
+
+            getAchievementIdByName(name) {
+                for (const [id, achievement] of Object.entries(this.state.achievements)) {
+                    if (achievement.name === name) return id;
+                }
+                return null;
+            }
+
+            copyMessage(messageId) {
+                const messageElement = document.getElementById(messageId);
+                if (!messageElement) return;
+                
+                const messageText = messageElement.querySelector('.message-content').textContent;
+                navigator.clipboard.writeText(messageText).then(() => {
+                    this.showNotification('Сообщение скопировано 📋', 'success');
+                });
+            }
+
+            regenerateMessage(messageId) {
+                // Найти сообщение и запросить перегенерацию
+                const messageElement = document.getElementById(messageId);
+                if (!messageElement) return;
+                
+                const messageIndex = Array.from(this.elements.chatMessages.children).indexOf(messageElement);
+                if (messageIndex > 0) {
+                    const prevMessage = this.elements.chatMessages.children[messageIndex - 1];
+                    const userMessage = prevMessage.querySelector('.message-content').textContent;
+                    
+                    // Удалить старый ответ и сгенерировать новый
+                    messageElement.remove();
+                    this.state.conversationHistory.pop(); // Удалить последний ответ AI
+                    
+                    this.elements.messageInput.value = userMessage;
+                    this.sendMessage();
+                }
+            }
+
+            showTypingIndicator() {
+                this.elements.typingIndicator.style.display = 'block';
                 this.scrollToBottom();
             }
-            
-            hideTyping() {
-                this.typingIndicator.style.display = 'none';
+
+            hideTypingIndicator() {
+                this.elements.typingIndicator.style.display = 'none';
             }
-            
+
+            showNotification(text, type = 'info') {
+                this.elements.notificationText.textContent = text;
+                
+                switch(type) {
+                    case 'success':
+                        this.elements.notification.style.background = 'linear-gradient(135deg, #ec4899, #db2777)';
+                        break;
+                    case 'error':
+                        this.elements.notification.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                        break;
+                    case 'warning':
+                        this.elements.notification.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                        break;
+                    default:
+                        this.elements.notification.style.background = 'var(--gradient)';
+                }
+                
+                this.elements.notification.classList.add('show');
+                
+                setTimeout(() => {
+                    this.elements.notification.classList.remove('show');
+                }, 3000);
+            }
+
+            getCurrentTime() {
+                const now = new Date();
+                return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            }
+
             scrollToBottom() {
                 setTimeout(() => {
-                    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+                    this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
                 }, 100);
             }
+
+            loadFromLocalStorage() {
+                // Загрузка темы
+                const savedTheme = localStorage.getItem('verdikt_theme');
+                if (savedTheme) {
+                    this.setTheme(savedTheme);
+                }
+                
+                // Загрузка сохраненных чатов
+                const savedChats = JSON.parse(localStorage.getItem('verdikt_saved_chats') || '[]');
+                this.state.stats.savedChats = savedChats.length;
+                
+                // Загрузка статистики
+                const savedStats = JSON.parse(localStorage.getItem('verdikt_stats') || '{}');
+                if (savedStats.totalMessages) {
+                    this.state.stats = { ...this.state.stats, ...savedStats };
+                }
+                
+                // Загрузка достижений
+                const savedAchievements = JSON.parse(localStorage.getItem('verdikt_achievements') || '{}');
+                Object.keys(savedAchievements).forEach(key => {
+                    if (this.state.achievements[key]) {
+                        this.state.achievements[key].unlocked = savedAchievements[key].unlocked;
+                    }
+                });
+            }
+
+            saveToLocalStorage() {
+                localStorage.setItem('verdikt_theme', this.state.currentTheme);
+                localStorage.setItem('verdikt_stats', JSON.stringify(this.state.stats));
+                
+                const achievementsData = {};
+                Object.keys(this.state.achievements).forEach(key => {
+                    achievementsData[key] = {
+                        unlocked: this.state.achievements[key].unlocked
+                    };
+                });
+                localStorage.setItem('verdikt_achievements', JSON.stringify(achievementsData));
+            }
+
+            updateAverageResponseTime(newTime) {
+                this.state.responseTimes.push(newTime);
+                if (this.state.responseTimes.length > 10) {
+                    this.state.responseTimes = this.state.responseTimes.slice(-10);
+                }
+            }
         }
-        
-        // Запуск приложения при загрузке страницы
-        document.addEventListener('DOMContentLoaded', () => {
-            window.chatApp = new SimpleChatApp();
-        });
+
+        // Создаем глобальный экземпляр для доступа из HTML
+        window.VerdiktChat = new VerdiktChatApp();
     </script>
 </body>
-</html>
+</html>  
