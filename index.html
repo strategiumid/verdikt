@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdikt GPT - Эксперт по отношениям</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Фоновые элементы -->
+    <div class="background-elements">
+        <div class="grid-pattern"></div>
+        <div class="floating-hearts" id="floating-hearts"></div>
+        <div class="connection-particles" id="connection-particles"></div>
+    </div>
+
+    <!-- Уведомления -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Сообщение отправлено</span>
+    </div>
+
+    <!-- Уведомления о достижениях -->
+    <div class="achievement-notification" id="achievement-notification" style="display: none;">
+        <div class="achievement-icon" id="achievement-icon">🎯</div>
+        <div>
+            <div id="achievement-title">Достижение получено!</div>
+            <div id="achievement-desc" style="font-size: 0.9rem; opacity: 0.9;"></div>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div class="modal" id="settings-modal">
+        <!-- Содержимое модального окна настроек -->
+    </div>
+
+    <div class="modal" id="export-modal">
+        <!-- Содержимое модального окна экспорта -->
+    </div>
+
+    <div class="modal" id="stats-modal">
+        <!-- Содержимое модального окна статистики -->
+    </div>
+
+    <!-- Навигация презентации -->
+    <div class="presentation-nav" style="display: none;">
+        <button class="ios-button small" id="prev-slide">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="ios-button small" id="next-slide">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="ios-button small secondary" id="exit-presentation">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Шапка приложения -->
+        <div class="app-header">
+            <!-- Содержимое шапки -->
+        </div>
+        
+        <div class="main-content">
+            <!-- Боковая панель -->
+            <div class="sidebar">
+                <!-- Режимы AI -->
+                <div class="sidebar-card">
+                    <!-- Содержимое карточки режимов -->
+                </div>
+                
+                <!-- Быстрые команды -->
+                <div class="sidebar-card">
+                    <!-- Содержимое карточки команд -->
+                </div>
+                
+                <!-- Достижения -->
+                <div class="sidebar-card">
+                    <!-- Содержимое карточки достижений -->
+                </div>
+                
+                <!-- Статистика -->
+                <div class="sidebar-card">
+                    <!-- Содержимое карточки статистики -->
+                </div>
+            </div>
+            
+            <!-- Основная область чата -->
+            <div class="chat-area">
+                <!-- Панель управления -->
+                <div class="chat-controls">
+                    <!-- Элементы управления -->
+                </div>
+                
+                <!-- Контейнер чата -->
+                <div class="chat-container">
+                    <!-- Заголовок чата -->
+                    <div class="chat-header">
+                        <!-- Заголовок и аватар -->
+                    </div>
+                    
+                    <!-- История сообщений -->
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Сообщения будут добавляться здесь -->
+                    </div>
+                    
+                    <!-- Умные подсказки -->
+                    <div class="smart-suggestions" id="smart-suggestions">
+                        <!-- Подсказки -->
+                    </div>
+                    
+                    <!-- Индикатор набора текста -->
+                    <div class="typing-indicator" id="typing-indicator">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Примеры вопросов -->
+                    <div class="examples">
+                        <!-- Примеры кнопок -->
+                    </div>
+                    
+                    <!-- Панель ввода -->
+                    <div class="input-container">
+                        <!-- Поле ввода и кнопки -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <!-- Содержимое подвала -->
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/ui-manager.js"></script>
+    <script src="js/voice-service.js"></script>
+    <script src="js/storage-service.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
