@@ -1,0 +1,63 @@
+/* styles.css */
+:root {
+    /* CSS переменные и общие стили */
+    --primary: #ec4899;
+    --primary-dark: #db2777;
+    --primary-light: #f472b6;
+    --secondary: #8b5cf6;
+    --secondary-dark: #7c3aed;
+    --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    --bg-card: rgba(30, 41, 59, 0.7);
+    --bg-card-light: rgba(30, 41, 59, 0.95);
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --glow: 0 0 20px rgba(236, 72, 153, 0.5);
+    --ios-blue: #ec4899;
+    --ios-gray: #8E8E93;
+    --ios-light-gray: #F2F2F7;
+    --ios-card: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+    /* Светлая тема */
+}
+
+[data-theme="high-contrast"] {
+    /* Высокая контрастность */
+}
+
+[data-theme="gradient"] {
+    /* Градиентная тема */
+}
+
+/* Глобальные стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background 0.3s ease;
+}
+
+/* Остальные стили классов... */
