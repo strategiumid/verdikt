@@ -5,146 +5,422 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verdikt GPT - Эксперт по отношениям</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .app-header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .chat-container {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chat-messages {
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 15px;
+        }
+
+        .message {
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            max-width: 80%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .ai-message {
+            background: rgba(236, 72, 153, 0.2);
+            border-left: 4px solid #ec4899;
+            margin-right: auto;
+        }
+
+        .user-message {
+            background: rgba(139, 92, 246, 0.2);
+            border-right: 4px solid #8b5cf6;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 15px;
+        }
+
+        #message-input {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(236, 72, 153, 0.3);
+            border-radius: 15px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            resize: none;
+            min-height: 60px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        #message-input:focus {
+            border-color: #ec4899;
+        }
+
+        #send-button {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 0 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        #send-button:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: rgba(236, 72, 153, 0.1);
+            border-radius: 15px;
+            margin: 10px 0;
+            width: 100px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #ec4899;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .chat-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .input-area {
+                flex-direction: column;
+            }
+            
+            #send-button {
+                height: 50px;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Фоновые элементы -->
-    <div class="background-elements">
-        <div class="grid-pattern"></div>
-        <div class="floating-hearts" id="floating-hearts"></div>
-        <div class="connection-particles" id="connection-particles"></div>
-    </div>
-
-    <!-- Уведомления -->
-    <div class="notification" id="notification">
-        <i class="fas fa-check-circle"></i>
-        <span id="notification-text">Сообщение отправлено</span>
-    </div>
-
-    <!-- Уведомления о достижениях -->
-    <div class="achievement-notification" id="achievement-notification" style="display: none;">
-        <div class="achievement-icon" id="achievement-icon">🎯</div>
-        <div>
-            <div id="achievement-title">Достижение получено!</div>
-            <div id="achievement-desc" style="font-size: 0.9rem; opacity: 0.9;"></div>
-        </div>
-    </div>
-
-    <!-- Модальные окна -->
-    <div class="modal" id="settings-modal">
-        <!-- Содержимое модального окна настроек -->
-    </div>
-
-    <div class="modal" id="export-modal">
-        <!-- Содержимое модального окна экспорта -->
-    </div>
-
-    <div class="modal" id="stats-modal">
-        <!-- Содержимое модального окна статистики -->
-    </div>
-
-    <!-- Навигация презентации -->
-    <div class="presentation-nav" style="display: none;">
-        <button class="ios-button small" id="prev-slide">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="ios-button small" id="next-slide">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        <button class="ios-button small secondary" id="exit-presentation">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-
     <div class="container">
-        <!-- Шапка приложения -->
         <div class="app-header">
-            <!-- Содержимое шапки -->
-        </div>
-        
-        <div class="main-content">
-            <!-- Боковая панель -->
-            <div class="sidebar">
-                <!-- Режимы AI -->
-                <div class="sidebar-card">
-                    <!-- Содержимое карточки режимов -->
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-heart"></i>
                 </div>
-                
-                <!-- Быстрые команды -->
-                <div class="sidebar-card">
-                    <!-- Содержимое карточки команд -->
-                </div>
-                
-                <!-- Достижения -->
-                <div class="sidebar-card">
-                    <!-- Содержимое карточки достижений -->
-                </div>
-                
-                <!-- Статистика -->
-                <div class="sidebar-card">
-                    <!-- Содержимое карточки статистики -->
-                </div>
-            </div>
-            
-            <!-- Основная область чата -->
-            <div class="chat-area">
-                <!-- Панель управления -->
-                <div class="chat-controls">
-                    <!-- Элементы управления -->
-                </div>
-                
-                <!-- Контейнер чата -->
-                <div class="chat-container">
-                    <!-- Заголовок чата -->
-                    <div class="chat-header">
-                        <!-- Заголовок и аватар -->
-                    </div>
-                    
-                    <!-- История сообщений -->
-                    <div class="chat-messages" id="chat-messages">
-                        <!-- Сообщения будут добавляться здесь -->
-                    </div>
-                    
-                    <!-- Умные подсказки -->
-                    <div class="smart-suggestions" id="smart-suggestions">
-                        <!-- Подсказки -->
-                    </div>
-                    
-                    <!-- Индикатор набора текста -->
-                    <div class="typing-indicator" id="typing-indicator">
-                        <div class="typing-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-                    
-                    <!-- Примеры вопросов -->
-                    <div class="examples">
-                        <!-- Примеры кнопок -->
-                    </div>
-                    
-                    <!-- Панель ввода -->
-                    <div class="input-container">
-                        <!-- Поле ввода и кнопки -->
-                    </div>
+                <div>
+                    <h1>Verdikt GPT</h1>
+                    <p style="color: #94a3b8;">Эксперт по отношениям и психологии</p>
                 </div>
             </div>
         </div>
-        
-        <footer>
-            <!-- Содержимое подвала -->
-        </footer>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai-message">
+                    <div style="font-weight: 600; color: #ec4899; margin-bottom: 10px;">
+                        <i class="fas fa-heart"></i> Эксперт по отношениям
+                    </div>
+                    <div style="line-height: 1.6;">
+                        Привет! 👋 Я - эксперт в области психологии отношений, знакомств и распознавания манипуляций.<br><br>
+                        💕 <strong>Отношения</strong> - помощь в построении здоровых отношений, решение конфликтов<br>
+                        👥 <strong>Знакомства</strong> - советы по онлайн и офлайн знакомствам<br>
+                        🛡️ <strong>Манипуляции</strong> - распознавание психологических манипуляций<br><br>
+                        Расскажите, с какой ситуацией вы столкнулись? Я помогу разобраться!
+                    </div>
+                    <div style="text-align: right; margin-top: 10px; font-size: 0.8rem; color: #94a3b8;">
+                        Сейчас
+                    </div>
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <textarea 
+                    id="message-input" 
+                    placeholder="Опишите вашу ситуацию в отношениях, знакомствах или вопросы о манипуляциях..." 
+                    maxlength="2000"
+                    rows="3"
+                ></textarea>
+                <button id="send-button">
+                    <i class="fas fa-paper-plane"></i> Отправить
+                </button>
+            </div>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/api-service.js"></script>
-    <script src="js/ui-manager.js"></script>
-    <script src="js/voice-service.js"></script>
-    <script src="js/storage-service.js"></script>
-    <script src="js/main.js"></script>
+    <script>
+        // Простой рабочий код
+        class SimpleChatApp {
+            constructor() {
+                this.chatMessages = document.getElementById('chat-messages');
+                this.messageInput = document.getElementById('message-input');
+                this.sendButton = document.getElementById('send-button');
+                this.typingIndicator = document.getElementById('typing-indicator');
+                
+                this.init();
+            }
+            
+            init() {
+                this.sendButton.addEventListener('click', () => this.sendMessage());
+                this.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+                
+                // Авторазмер textarea
+                this.messageInput.addEventListener('input', () => {
+                    this.messageInput.style.height = 'auto';
+                    this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 150) + 'px';
+                });
+                
+                console.log('Verdikt GPT запущен!');
+            }
+            
+            sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+                
+                // Добавляем сообщение пользователя
+                this.addMessage(message, 'user');
+                
+                // Очищаем поле ввода
+                this.messageInput.value = '';
+                this.messageInput.style.height = 'auto';
+                
+                // Показываем индикатор набора
+                this.showTyping();
+                
+                // Имитируем ответ AI (замените на реальный API)
+                setTimeout(() => {
+                    this.hideTyping();
+                    const response = this.generateResponse(message);
+                    this.addMessage(response, 'ai');
+                }, 1500);
+            }
+            
+            addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                messageDiv.innerHTML = `
+                    <div style="font-weight: 600; color: ${sender === 'user' ? '#8b5cf6' : '#ec4899'}; margin-bottom: 10px;">
+                        <i class="fas fa-${sender === 'user' ? 'user' : 'heart'}"></i> 
+                        ${sender === 'user' ? 'Вы' : 'Эксперт по отношениям'}
+                    </div>
+                    <div style="line-height: 1.6;">${this.formatText(text)}</div>
+                    <div style="text-align: right; margin-top: 10px; font-size: 0.8rem; color: #94a3b8;">
+                        ${time}
+                    </div>
+                `;
+                
+                this.chatMessages.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+            
+            formatText(text) {
+                return text
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            }
+            
+            generateResponse(userMessage) {
+                const lowerMessage = userMessage.toLowerCase();
+                
+                // Простые ответы для демонстрации
+                if (lowerMessage.includes('манипуляц') || lowerMessage.includes('манипулируют')) {
+                    return `Признаки манипуляции в отношениях:
+                    
+1. 🚨 **Газлайтинг** - отрицание реальности, заставляют сомневаться в своих чувствах
+2. ⚖️ **Чувство вины** - постоянные упрёки и обвинения
+3. 🔄 **Двойные стандарты** - правила для вас, но не для них
+4. 🎭 **Эмоциональный шантаж** - "Если ты меня любишь, то..." 
+
+Важно установить чёткие границы и не бояться говорить "нет". Хотите подробнее разобрать вашу ситуацию?`;
+                }
+                
+                if (lowerMessage.includes('отношен') || lowerMessage.includes('любов')) {
+                    return `Здоровые отношения строятся на трёх китах:
+                    
+💖 **Доверие** - возможность быть собой без страха осуждения
+🗣️ **Коммуникация** - открытое обсуждение чувств и проблем
+⚖️ **Баланс** - равноправие и взаимное уважение
+
+Расскажите подробнее о вашей ситуации, и я помогу найти решение!`;
+                }
+                
+                if (lowerMessage.includes('знакомств') || lowerMessage.includes('свидан')) {
+                    return `Советы для успешных знакомств:
+                    
+1. 🌟 **Будьте собой** - не пытайтесь произвести впечатление, будьте искренни
+2. 👂 **Слушайте активно** - проявляйте интерес к собеседнику
+3. 💬 **Задавайте открытые вопросы** - вместо "Тебе нравится кино?" спросите "Какой фильм произвёл на тебя наибольшее впечатление?"
+4. 😊 **Улыбайтесь** - это создаёт положительную атмосферу
+
+Помните: качество важнее количества!`;
+                }
+                
+                // Общий ответ
+                return `Спасибо за ваш вопрос! Как эксперт по отношениям, я могу помочь вам:
+
+• 🛡️ Распознать манипуляции и установить здоровые границы
+• 💕 Улучшить коммуникацию в отношениях
+• 👥 Наладить процесс знакомств и свиданий
+• 🧠 Поработать с самооценкой и уверенностью в себе
+
+Расскажите подробнее, что именно вас беспокоит? Я готов помочь!`;
+            }
+            
+            showTyping() {
+                this.typingIndicator.style.display = 'block';
+                this.scrollToBottom();
+            }
+            
+            hideTyping() {
+                this.typingIndicator.style.display = 'none';
+            }
+            
+            scrollToBottom() {
+                setTimeout(() => {
+                    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+                }, 100);
+            }
+        }
+        
+        // Запуск приложения при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            window.chatApp = new SimpleChatApp();
+        });
+    </script>
 </body>
 </html>
